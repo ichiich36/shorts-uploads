@@ -75,3 +75,14 @@ Stand der Bedingungen (Nov 2026, bei jedem Monetarisierungs-Check neu prüfen):
 
 Folgerung für jedes Video: Reichweite + Abos stehen über allem. Serien-Formate (Teil 1, 2, 3 …) und klare
 Wiedererkennung bringen Follower; jede Folge muss trotzdem alleine verständlich sein.
+
+# Credit-Budget ElevenLabs (hat Vorrang vor Wortzahlen in den Aufträgen)
+
+Starter-Plan: ca. 27.000 Credits bis zum Reset am 25.12.2026, danach 39.008 pro Monat. 1 Credit ≈ 1 Zeichen Text.
+- Voice-Videos (Autos + Storys): je 3 pro Woche (Autos Mo/Mi/Sa, Storys Di/Do/Fr) = 6 pro Woche.
+- Skript pro Video: **max. ca. 1.100 Zeichen** (≈ 180–195 Wörter ≈ 62–68 s). Das reicht knapp über die 1-Minuten-Grenze
+  von TikTok und spart Credits. Wird die Stimme kürzer als 62 s, mit Bild-Outro verlängern statt mehr Text.
+- Nie mehr als 1 Take, nie Testgenerierungen.
+- Tech-Videos kosten 0 Credits → davon 2 pro Tag.
+- Vor jeder Generierung mit account_get_usage prüfen: Sind weniger Credits übrig als (verbleibende Voice-Videos bis
+  zum Reset × 1.100), dann Video auslassen und dem Nutzer melden statt ins Minus/Overage zu laufen.
