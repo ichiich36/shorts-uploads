@@ -60,3 +60,18 @@ außer als Mitmach-Frage.
 ## 6. Uhrzeiten (Zielgruppe englischsprachig, v. a. USA)
 - Gepostet wird am späten Nachmittag/Abend deutscher Zeit = Mittag/Nachmittag in den USA:
   Tech ~17:45, Autos 18:30, Storys ~21:00 (deutsche Zeit).
+
+# Ziel Nr. 1: Geld verdienen (Monetarisierung)
+
+Stand der Bedingungen (Nov 2026, bei jedem Monetarisierungs-Check neu prüfen):
+- **TikTok Creator Rewards (Deutschland verfügbar):** 18+, mind. 10.000 Follower, mind. 100.000 Aufrufe in den
+  letzten 30 Tagen, Konto mind. 30 Tage alt. **Nur Videos ÜBER 1 Minute verdienen Geld.**
+  → Autos und Storys IMMER 65–75 Sekunden lang machen (Skript ca. 190–215 Wörter), nie unter 62 s.
+  → Tech bleibt kurz (20–35 s) für Wachstum/Reichweite; verdient über YouTube.
+- **YouTube Partner Program:** Stufe 1 (Fan-Funding, keine Werbeeinnahmen): 500 Abos + 3 Uploads in 90 Tagen +
+  3 Mio. Shorts-Aufrufe in 90 Tagen. Stufe 2 (Werbeeinnahmen): 1.000 Abos + 10 Mio. Shorts-Aufrufe in 90 Tagen;
+  ab 01.02.2027 für neue Creator 20 Mio. Shorts-Aufrufe in 90 Tagen.
+- **Instagram:** Geschenke ab 500 Follower, Creator Marketplace ab 1.000, Abos ab 10.000; Reels-Boni nur auf Einladung.
+
+Folgerung für jedes Video: Reichweite + Abos stehen über allem. Serien-Formate (Teil 1, 2, 3 …) und klare
+Wiedererkennung bringen Follower; jede Folge muss trotzdem alleine verständlich sein.
