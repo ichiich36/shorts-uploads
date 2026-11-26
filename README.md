@@ -10,7 +10,8 @@ Videos in `videos/` are public on purpose: Buffer and Windsor fetch them from
   Instagram technik96 (Windsor connector instagram, account 17841466978824968, action create_video_post).
   Files: `videos/Short_NN_<Name>.mp4`. Generators in `tools/tech/` (pure python + cv2 + ffmpeg, 1080x1920, 30 fps).
 - **How Cars Work (English, ~55-60 s, voice Todd g14YnDYCsy3k7XLlcKlO, eleven_v4, 1 take):**
-  TikTok factpulse084 (Buffer channel 6b0812458541f09ecbadfdb0). Files: `videos/HowCarsWork_PartN_<Topic>.mp4`.
+  TikTok factpulse084 (Buffer channel 6b0812458541f09ecbadfdb0),
+  Instagram fact.pulse90 (Windsor instagram account 17841438794736046; log of posted parts in posted_instagram_cars.txt). Files: `videos/HowCarsWork_PartN_<Topic>.mp4`.
   Framework in `tools/cars/` (Part 3 version): script.py (SEGMENTS), align.py voice.mp3 -> timeline.json,
   render.py (scenes), sfx.py voice.mp3 -> mix.wav. Professional tone, no gags. Each part ends with a teaser for the next.
   YouTube FactPulse90 via Make scenario 8829633 (on-demand; inputs video_url, title, description, privacy, publish_at).
