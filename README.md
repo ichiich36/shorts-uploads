@@ -19,6 +19,11 @@ Videos in `videos/` are public on purpose: Buffer and Windsor fetch them from
   For a scheduled YouTube post use privacy "private" + publish_at (ISO 8601 with offset).
 - Buffer organization 6b07fd269d5a54e153d3cd07 (timezone Europe/Berlin). Windsor YouTube upload is broken (always "rate-limited"): do not use.
 
+- **Stories (ichiichii631@gmail.com, English, stick-figure cartoon, voice Brian nPczCjzI2devNBz1zQrb):**
+  YouTube (Make scenario 8829688 with channel "story"), TikTok tinytales.584 (Buffer channel 6b0866ce8541f09ecbb2852a),
+  Instagram tinytales.584 (Windsor instagram account 17841445178149404). Files: videos/Story_NN_<Name>.mp4, tools in tools/story/.
+- Make scenario 8829688 = "YouTube Upload (alle Kanäle)": input channel "" or "tech" -> techtbe24, "autos" -> FactPulse90, "story" -> story channel.
+
 ## Pipeline
 1. Voice only from ElevenLabs (creative_generate_speech, generations_count 1, flow xot9linTH2GumUUt2pV3);
    download the mp3 from creative_get_generations full_res_url with curl. Never render in the ElevenLabs sandbox.
