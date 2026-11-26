@@ -13,7 +13,10 @@ Videos in `videos/` are public on purpose: Buffer and Windsor fetch them from
   TikTok factpulse084 (Buffer channel 6b0812458541f09ecbadfdb0). Files: `videos/HowCarsWork_PartN_<Topic>.mp4`.
   Framework in `tools/cars/` (Part 3 version): script.py (SEGMENTS), align.py voice.mp3 -> timeline.json,
   render.py (scenes), sfx.py voice.mp3 -> mix.wav. Professional tone, no gags. Each part ends with a teaser for the next.
-- Buffer organization 6b07fd269d5a54e153d3cd07 (timezone Europe/Berlin).
+  YouTube FactPulse90 via Make scenario 8829633 (on-demand; inputs video_url, title, description, privacy, publish_at).
+- YouTube techtbe24 via Make scenario 8829688 (same inputs). Make: eu1, org 9757895, team 3788512.
+  For a scheduled YouTube post use privacy "private" + publish_at (ISO 8601 with offset).
+- Buffer organization 6b07fd269d5a54e153d3cd07 (timezone Europe/Berlin). Windsor YouTube upload is broken (always "rate-limited"): do not use.
 
 ## Pipeline
 1. Voice only from ElevenLabs (creative_generate_speech, generations_count 1, flow xot9linTH2GumUUt2pV3);
