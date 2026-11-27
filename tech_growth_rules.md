@@ -52,11 +52,19 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
   bei Alter 9,3 h nach Regel 5 als Stillstand gewertet (Ball Shrinks nachgeholt). Nächster frischer Snapshot
   (27.11. 11:38 UTC, Alter 12,3 h): 203 → zwischen 6,2 h und 12,3 h nur +3, der Post bei 9,3 h war nicht zu früh.
 - Short 04 Ball Shrinks (TikTok 2026-11-27 08:39 UTC, Nachholen): 198 Aufrufe nach 3,0 h (Snapshot 11:38 UTC; Ball Grows
-  hatte 200 erst nach 6,2 h); Ø 8,9 s gesehen, 7,4 % bis zum Ende.
+  hatte 200 erst nach 6,2 h); Ø 8,9 s gesehen, 7,4 % bis zum Ende. Nächster frischer Snapshot (17:38 UTC, Alter 9,0 h):
+  204 → zwischen 3 h und 9 h nur +6 → schon nach ~3 h flach. Bei 9,0 h nach Regel 3 (frische Daten) als Stillstand
+  gewertet, Escape the Rings nachgeholt.
+- Stand 27.11. 17:38 UTC (frisch): Ball Grows 204 nach 18,3 h (+1 seit 12,3 h), Perfect Sync 163 nach 24,6 h (+5 seit
+  18,6 h), Red vs Blue 74 (steht). Kein Video hat bisher einen späten Schub bekommen.
 - Windsor (Trial) liefert TikTok-Daten nur etwa alle 6 h frisch (Snapshots 26.11. 23:26, 27.11. 05:38 und 11:38 UTC);
   die Stundenwerte dazwischen sind linear interpoliert. Bisher flachen alle Videos nach ~6 h ab (Perfect Sync,
   Ball Grows) → Regel 5 (Cache-Stillstand ab 8 h) greift nicht zu früh.
-- Offen: Legt ein Video mit schnellem Start (Ball Shrinks) nach 6 h noch zu? Erst nach mehr Kurven Regeln anpassen.
+- Beantwortet (27.11.): Legt ein Video mit schnellem Start (Ball Shrinks) nach 6 h noch zu? Nein (198 → 204 zwischen
+  3 h und 9 h). Muster bisher: alle Simulationen landen nach 3–6,5 h bei ~150–200 Aufrufen und bleiben dort.
+  Keine Regeländerung: die Regeln passen zu den Kurven, und Windsor liefert ohnehin nur alle ~6 h frische Zahlen
+  (dazwischen ist die Kurve linear, „letzte Stunde vs. Stunde davor“ ist dann immer gleich). Weiter beobachten, ob ein
+  „What if“-Video (Short 07) anders verläuft.
 
 ## Änderungen an den Regeln (Datum – was – warum)
 - 2026-11-26: Datei mit den Startregeln angelegt. Festgelegt: Notbremse gegen laufenden Schub (Regel 6) und Abstand
@@ -68,3 +76,4 @@ Format: `- JJJJ-MM-TTTHH:MM:SSZ | Video | Kanäle | Grund (Aufrufe/Kurve des vor
 - 2026-11-26T16:59:58Z | Short 06 Perfect Sync | TikTok | vor Einführung des Takts (Zeit laut Windsor)
 - 2026-11-26T23:23:15Z | Short 03 Ball Grows | TikTok | vor Einführung des Takts (Zeit laut Windsor)
 - 2026-11-27T08:41:36Z | Short 04 Ball Shrinks (Nachholen, Buffer-Entwurf) | TikTok | Ball Grows: 200 Aufrufe beim letzten frischen Snapshot (05:38 UTC, 6,2 h alt; davor 11 nach 3 min), seitdem 3,0 h nur Cache, Alter 9,3 h → Regel 5 (Cache-Stillstand ab 8 h). TikTok https://tiktok.com/@tech.nik4/video/7712768294368840999
+- 2026-11-27T17:40:39Z | Short 05 Escape the Rings (Nachholen, letzter Buffer-Entwurf) | TikTok (YouTube/Instagram schon online) | Ball Shrinks: 198 Aufrufe nach 3,0 h (11:38 UTC), 204 nach 9,0 h (frischer Snapshot 17:38 UTC) → +6 in 6 h; Zuwachs 3 h +3 < Schwelle 10, letzte Stunde +1 = davor +1 → Regel 3 (Stillstand). TikTok https://tiktok.com/@tech.nik4/video/7712907204097035559
