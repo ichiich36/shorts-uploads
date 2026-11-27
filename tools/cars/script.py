@@ -1,17 +1,18 @@
-"""Narration script for 'How Cars Work - Part 3: The Automatic' and timing helpers."""
+"""Narration script for 'How Cars Work - Part 4: The Differential' and timing helpers."""
 import json
 import re
 
 SEGMENTS = [
-    ("A", "No clutch pedal. No gear stick. So how does an automatic shift by itself? Part three of our car series."),
-    ("B", "First, the clutch is replaced by a torque converter: two fans facing each other, sealed in oil."),
-    ("C", "The engine spins one fan. It throws oil at the other one, and that one turns the wheels."),
-    ("D", "At a red light, the oil simply slips. That's why the car can sit in drive without stalling."),
-    ("E", "Second, the gears. An automatic uses planetary gear sets: a sun gear in the middle, planets around it, and a ring gear outside."),
-    ("F", "Hold one part still, drive another, and the third turns at a new speed. That's a new gear."),
-    ("G", "Small clutches inside decide which part is held. They're squeezed together by oil pressure."),
-    ("H", "And a computer decides when. It reads your speed and the gas pedal, then shifts in a fraction of a second."),
-    ("K", "Next: the differential, and why your wheels never turn at the same speed in a corner. Follow for part four!"),
+    ("A", "Your wheels spin at different speeds in every corner. So how can one engine drive both? Part four of our car series."),
+    ("B", "The outside wheel has farther to go. On a solid axle, both would turn at the same speed, so one tire would skid."),
+    ("C", "The fix is the differential. The driveshaft spins a small pinion gear, which turns a big ring gear."),
+    ("D", "Bolted to the ring gear is a cage holding small spider gears. They mesh with two side gears, one per wheel."),
+    ("E", "Going straight, the spider gears don't turn on their pin. The whole cage spins as one block, so both wheels turn equally."),
+    ("F", "In a corner, the inside wheel slows down. The spider gears start to turn, and the outside wheel speeds up by exactly that much."),
+    ("G", "Ring gear at one hundred RPM? Ninety inside, one hundred ten outside. The average stays one hundred."),
+    ("H", "But there's a catch: an open differential sends equal torque to both wheels. If one is on ice, it spins, and the other gets almost nothing."),
+    ("I", "That's why many sports cars and off-roaders use limited-slip or locking differentials."),
+    ("K", "Next: the brakes, and how one foot can stop a two-ton car. Follow for part five!"),
 ]
 
 
@@ -19,8 +20,13 @@ def norm(w):
     return re.sub(r"[^a-z0-9'-]", "", w.lower())
 
 
+SYL_OVERRIDE = {"rpm": 3, "ev": 2, "abs": 3, "ecu": 3}  # abbreviations are spoken letter by letter
+
+
 def syllables(word):
     w = re.sub(r"[^a-z]", "", word.lower())
+    if w in SYL_OVERRIDE:
+        return SYL_OVERRIDE[w]
     if not w:
         return 1
     groups = re.findall(r"[aeiouy]+", w)
