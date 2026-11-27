@@ -40,9 +40,12 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
 - Die Parameter stehen oben im Skript. Regeländerung = Skript UND diese Datei anpassen und unten eintragen.
 
 ## Kurven früherer Videos (Beobachtungen)
-- Short 01 Red vs Blue (TikTok 2026-11-25 12:26 UTC): 74 Aufrufe nach ~35 h; Ø 9,3 s gesehen, 1,2 % bis zum Ende, 1 Follower.
-- Short 06 Perfect Sync (TikTok 2026-11-26 16:59 UTC): 150 Aufrufe nach ~6,5 h; Ø 8,0 s gesehen, 15,7 % bis zum Ende.
-- Short 03 Ball Grows (TikTok 2026-11-26 23:23 UTC): 11 Aufrufe nach 3 min.
+- Short 01 Red vs Blue (TikTok 2026-11-25 12:26 UTC): 74 Aufrufe nach ~35 h, nach ~41 h immer noch 74 (steht);
+  Ø 9,2 s gesehen, 1,2 % bis zum Ende, 1 Follower.
+- Short 06 Perfect Sync (TikTok 2026-11-26 16:59 UTC): 150 Aufrufe nach ~6,5 h, 155 nach ~12,6 h → nach ~6 h fast
+  flach; Ø 7,9 s gesehen, 15,6 % bis zum Ende.
+- Short 03 Ball Grows (TikTok 2026-11-26 23:23 UTC): 11 Aufrufe nach 3 min, 200 nach ~6,2 h (Snapshot 27.11. 05:38 UTC;
+  dazwischen nur Cache, Verlauf unbekannt); Ø 8,3 s gesehen, 2,7 % bis zum Ende.
 - Offen (mit den Stunden-Snapshots klären): Wann kommt der Schub, wann flacht die Kurve ab? Erst dann Regeln anpassen.
 
 ## Änderungen an den Regeln (Datum – was – warum)
