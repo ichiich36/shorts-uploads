@@ -45,15 +45,18 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
 ## Kurven früherer Videos (Beobachtungen)
 - Short 01 Red vs Blue (TikTok 2026-11-25 12:26 UTC): 74 Aufrufe nach ~35 h, nach ~41 h immer noch 74 (steht);
   Ø 9,2 s gesehen, 1,2 % bis zum Ende, 1 Follower.
-- Short 06 Perfect Sync (TikTok 2026-11-26 16:59 UTC): 150 Aufrufe nach ~6,5 h, 155 nach ~12,6 h → nach ~6 h fast
-  flach; Ø 7,9 s gesehen, 15,6 % bis zum Ende.
+- Short 06 Perfect Sync (TikTok 2026-11-26 16:59 UTC): 150 Aufrufe nach ~6,5 h, 155 nach ~12,6 h, 158 nach ~18,6 h →
+  nach ~6 h fast flach; Ø 8,2 s gesehen, 16,8 % bis zum Ende.
 - Short 03 Ball Grows (TikTok 2026-11-26 23:23 UTC): 11 Aufrufe nach 3 min, 200 nach ~6,2 h (Snapshot 27.11. 05:38 UTC;
   dazwischen nur Cache, Verlauf unbekannt); Ø 8,3 s gesehen, 2,7 % bis zum Ende. Danach bis 08:38 UTC nur Cache →
-  bei Alter 9,3 h nach Regel 5 als Stillstand gewertet (Ball Shrinks nachgeholt).
-- Windsor (Trial) liefert TikTok-Daten nur etwa alle 6 h frisch (Snapshots 26.11. 23:26 und 27.11. 05:38 UTC); die
-  Stundenwerte dazwischen sind linear interpoliert. Mit der nächsten frischen Abfrage prüfen, ob Ball Grows nach 6 h
-  noch zugelegt hat – das zeigt, ob Regel 5 (8 h) zu früh greift.
-- Offen (mit den Stunden-Snapshots klären): Wann kommt der Schub, wann flacht die Kurve ab? Erst dann Regeln anpassen.
+  bei Alter 9,3 h nach Regel 5 als Stillstand gewertet (Ball Shrinks nachgeholt). Nächster frischer Snapshot
+  (27.11. 11:38 UTC, Alter 12,3 h): 203 → zwischen 6,2 h und 12,3 h nur +3, der Post bei 9,3 h war nicht zu früh.
+- Short 04 Ball Shrinks (TikTok 2026-11-27 08:39 UTC, Nachholen): 198 Aufrufe nach 3,0 h (Snapshot 11:38 UTC; Ball Grows
+  hatte 200 erst nach 6,2 h); Ø 8,9 s gesehen, 7,4 % bis zum Ende.
+- Windsor (Trial) liefert TikTok-Daten nur etwa alle 6 h frisch (Snapshots 26.11. 23:26, 27.11. 05:38 und 11:38 UTC);
+  die Stundenwerte dazwischen sind linear interpoliert. Bisher flachen alle Videos nach ~6 h ab (Perfect Sync,
+  Ball Grows) → Regel 5 (Cache-Stillstand ab 8 h) greift nicht zu früh.
+- Offen: Legt ein Video mit schnellem Start (Ball Shrinks) nach 6 h noch zu? Erst nach mehr Kurven Regeln anpassen.
 
 ## Änderungen an den Regeln (Datum – was – warum)
 - 2026-11-26: Datei mit den Startregeln angelegt. Festgelegt: Notbremse gegen laufenden Schub (Regel 6) und Abstand
