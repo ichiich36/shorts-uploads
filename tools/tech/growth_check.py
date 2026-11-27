@@ -43,6 +43,12 @@ STALE_AGE_H = 8.0          # ... dann ab diesem Alter Zuwachs 0 = Stillstand
 EMERGENCY_H = 24.0         # Notbremse
 MISSING_TOL_H = 0.25       # Post-Protokoll neuer als neuestes Video + Toleranz -> Video fehlt noch in den Daten
 
+# Seit 2026-11-27 liefert Windsor tiktok_organic 3 Konten (Tech Nik, FactPulse = Autos, Tiny Tales = Storys).
+# Abruf deshalb mit accounts [TECH_ACCOUNT_ID] (+ Feld account_name). Schutz, falls der Filter fehlt:
+TECH_ACCOUNT = "Tech Nik"                                   # = tech.nik4
+TECH_ACCOUNT_ID = "_000O2MjrBlBL3ioBnyTn44UQykVqxO0TFdj"
+FOREIGN_TAGS = ("#howcarswork", "#truestory", "#storytime")  # Autos (FactPulse) / Storys (Tiny Tales)
+
 
 def utc(s):
     d = datetime.fromisoformat(str(s).strip().replace("Z", "+00:00"))
@@ -87,8 +93,13 @@ def append(path, payload, now, dry):
     data = payload.get("data", []) if isinstance(payload, dict) else payload
     rows = read_log(path)
     last_fetch = {r["video_id"]: r["fetched_at_utc"] for r in rows}   # letzte Zeile je Video
-    new = []
+    new, foreign = [], []
     for d in data or []:
+        acc = d.get("account_name")
+        cap = (d.get("video_caption") or "").lower()
+        if (acc is not None and acc != TECH_ACCOUNT) or (acc is None and any(t in cap for t in FOREIGN_TAGS)):
+            foreign.append(f"{acc or '?'}: {short(d.get('video_caption'), 30)}")
+            continue
         created = utc(d["video_create_datetime"])
         if hours(now - created) > KEEP_DAYS * 24:
             continue
@@ -108,6 +119,9 @@ def append(path, payload, now, dry):
             print(f"Cache: '{row['caption_short']}' hat dasselbe data_fetched_at ({fetched}) wie die letzte Zeile"
                   " -> zaehlt als unbekannt, nicht als Stillstand")
         new.append(row)
+    if foreign:
+        print(f"WARNUNG: {len(foreign)} Video(s) anderer Konten uebersprungen ({'; '.join(foreign)}) -"
+              f" Windsor-Abruf mit accounts [\"{TECH_ACCOUNT_ID}\"] machen")
     new.sort(key=lambda r: r["created_at_utc"])
     if not dry:
         ensure_log(path)

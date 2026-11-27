@@ -6,9 +6,14 @@ plötzlich einen Schub – deshalb lieber etwas zu spät als zu früh posten.
 Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.nik4, Instagram technik96.
 
 ## Ablauf jede Stunde
-1. Windsor get_data: connector tiktok_organic (einziges Konto: „Tech Nik“ = tech.nik4), fields [video_id,
-   video_create_datetime, video_caption, video_views_count, video_likes, video_shares, video_average_time_watched,
-   video_full_watched_rate, video_new_followers, data_fetched_at], date_preset last_7dT, KEIN force_refresh.
+1. Windsor get_data: connector tiktok_organic, **accounts ["_000O2MjrBlBL3ioBnyTn44UQykVqxO0TFdj"]** (= „Tech Nik“ =
+   tech.nik4), fields [video_id, video_create_datetime, video_caption, video_views_count, video_likes, video_shares,
+   video_average_time_watched, video_full_watched_rate, video_new_followers, data_fetched_at], date_preset last_7dT,
+   KEIN force_refresh. Seit 27.11. ~20 Uhr UTC hat Windsor 3 TikTok-Konten (Tech Nik, FactPulse = Autos, Tiny Tales =
+   Storys) → ohne accounts-Filter kämen Auto- und Story-Videos ins Log und würden als „letztes Video“ gelten.
+   Feldliste sonst unverändert lassen (andere Felder = eigener Windsor-Cache mit eigenem data_fetched_at).
+   growth_check.py überspringt zur Sicherheit Videos anderer Konten (account_name ≠ „Tech Nik“, falls das Feld
+   mitkommt, sonst Captions mit #howcarswork/#truestory/#storytime) und meldet das als WARNUNG.
 2. Ergebnis-JSON als Datei speichern (Scratchpad) und ausführen:
    `python3 tools/tech/growth_check.py --append <datei.json>`
    → hängt für jedes Video der letzten 3 Tage eine Zeile an tech_growth_log.csv an und schreibt als letzte Zeile
@@ -65,10 +70,20 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
   Keine Regeländerung: die Regeln passen zu den Kurven, und Windsor liefert ohnehin nur alle ~6 h frische Zahlen
   (dazwischen ist die Kurve linear, „letzte Stunde vs. Stunde davor“ ist dann immer gleich). Weiter beobachten, ob ein
   „What if“-Video (Short 07) anders verläuft.
+- Short 05 Escape the Rings (TikTok 2026-11-27 17:38 UTC, Nachholen): 267 Aufrufe nach 3,0 h (frischer Snapshot
+  20:38 UTC) → bester Start aller Simulationen (Ball Shrinks 198 nach 3,0 h); Ø 10,5 s gesehen (bisher höchster Wert
+  der Simulationen), 4,1 % bis zum Ende, 7 Likes. Gleicher Snapshot: Ball Shrinks 204 nach 12,0 h (+0 seit 9,0 h),
+  Ball Grows 204 nach 21,3 h, Perfect Sync 163, Red vs Blue 74 → alle älteren flach, kein später Schub.
+  Dieser frische Snapshot kam schon 3 h nach dem letzten (17:38 → 20:38 UTC), vorher ~6 h – evtl. weil Windsor beim
+  Verbinden der neuen Konten neu geladen hat; nicht als neuen Takt voraussetzen.
 
 ## Änderungen an den Regeln (Datum – was – warum)
 - 2026-11-26: Datei mit den Startregeln angelegt. Festgelegt: Notbremse gegen laufenden Schub (Regel 6) und Abstand
   über das Post-Protokoll (Regel 7), damit nie zwei Posts kurz hintereinander rausgehen, wenn Windsor alte Daten liefert.
+- 2026-11-27 (20:38 UTC): Keine Regeländerung, aber Datenabruf abgesichert: Windsor liefert jetzt 3 TikTok-Konten.
+  Abruf mit accounts-Filter auf Tech Nik (Schritt 1) und Schutz in growth_check.py (fremde Videos werden übersprungen).
+  Grund: Sonst wäre die Eiffelturm-Story (Tiny Tales, 19:34 UTC) als „letztes Tech-Video“ gewertet worden und Auto-/
+  Story-Zahlen hätten die Kurven verfälscht.
 
 ## Post-Protokoll (neueste unten)
 Format: `- JJJJ-MM-TTTHH:MM:SSZ | Video | Kanäle | Grund (Aufrufe/Kurve des vorherigen Videos)`
