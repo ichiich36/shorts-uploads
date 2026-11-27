@@ -15,6 +15,9 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
    `ENTSCHEIDUNG: POSTEN|WARTEN - Grund`. Zahlen kurz auf Plausibilität prüfen.
 3. Log committen und pushen (bei Konflikt `git pull --rebase`). Bei POSTEN: genau ein Video, danach unten im
    Post-Protokoll eintragen (Zeit in UTC, Video, Kanäle, Grund mit Aufrufen/Kurve des vorherigen Videos).
+4. Buffer-Entwurf veröffentlichen (Nachholen): `edit_post` mit postId, mode `shareNow` UND `saveToDraft: false`.
+   Nur mode shareNow lässt den Post als Entwurf liegen (getestet 2026-11-27). Danach mit `get_post` prüfen:
+   scheduled → sending → sent (dauert ~2 min), externalLink = TikTok-Link.
 
 ## Regeln (aktuell)
 1. **Sock-Delay:** Nicht posten, solange das letzte Video jünger als 4 h ist.
@@ -45,7 +48,11 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
 - Short 06 Perfect Sync (TikTok 2026-11-26 16:59 UTC): 150 Aufrufe nach ~6,5 h, 155 nach ~12,6 h → nach ~6 h fast
   flach; Ø 7,9 s gesehen, 15,6 % bis zum Ende.
 - Short 03 Ball Grows (TikTok 2026-11-26 23:23 UTC): 11 Aufrufe nach 3 min, 200 nach ~6,2 h (Snapshot 27.11. 05:38 UTC;
-  dazwischen nur Cache, Verlauf unbekannt); Ø 8,3 s gesehen, 2,7 % bis zum Ende.
+  dazwischen nur Cache, Verlauf unbekannt); Ø 8,3 s gesehen, 2,7 % bis zum Ende. Danach bis 08:38 UTC nur Cache →
+  bei Alter 9,3 h nach Regel 5 als Stillstand gewertet (Ball Shrinks nachgeholt).
+- Windsor (Trial) liefert TikTok-Daten nur etwa alle 6 h frisch (Snapshots 26.11. 23:26 und 27.11. 05:38 UTC); die
+  Stundenwerte dazwischen sind linear interpoliert. Mit der nächsten frischen Abfrage prüfen, ob Ball Grows nach 6 h
+  noch zugelegt hat – das zeigt, ob Regel 5 (8 h) zu früh greift.
 - Offen (mit den Stunden-Snapshots klären): Wann kommt der Schub, wann flacht die Kurve ab? Erst dann Regeln anpassen.
 
 ## Änderungen an den Regeln (Datum – was – warum)
@@ -57,3 +64,4 @@ Format: `- JJJJ-MM-TTTHH:MM:SSZ | Video | Kanäle | Grund (Aufrufe/Kurve des vor
 - 2026-11-25T12:26:35Z | Short 01 Red vs Blue | TikTok | vor Einführung des Takts (Zeit laut Windsor)
 - 2026-11-26T16:59:58Z | Short 06 Perfect Sync | TikTok | vor Einführung des Takts (Zeit laut Windsor)
 - 2026-11-26T23:23:15Z | Short 03 Ball Grows | TikTok | vor Einführung des Takts (Zeit laut Windsor)
+- 2026-11-27T08:41:36Z | Short 04 Ball Shrinks (Nachholen, Buffer-Entwurf) | TikTok | Ball Grows: 200 Aufrufe beim letzten frischen Snapshot (05:38 UTC, 6,2 h alt; davor 11 nach 3 min), seitdem 3,0 h nur Cache, Alter 9,3 h → Regel 5 (Cache-Stillstand ab 8 h). TikTok https://tiktok.com/@tech.nik4/video/7712768294368840999
