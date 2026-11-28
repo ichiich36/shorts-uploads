@@ -42,7 +42,9 @@ STALE_H = 3.0              # Daten aelter als das = "stehen mehrere Stunden" (Ca
 STALE_AGE_H = 8.0          # ... dann ab diesem Alter Zuwachs 0 = Stillstand (seit 28.11. nur, wenn das Video beim
                            #     letzten frischen Snapshot schon flach war, sonst WAECHST_ZULETZT -> warten)
 EMERGENCY_H = 24.0         # Notbremse
-MISSING_TOL_H = 0.25       # Post-Protokoll neuer als neuestes Video + Toleranz -> Video fehlt noch in den Daten
+PUSH_HOLD_H = 7.0          # seit 28.11. 08:38 UTC: WAECHST_ZULETZT haelt die Notbremse auch auf, solange der letzte
+                           #     Snapshot juenger ist als das (Windsor-Zyklus ~6 h + 1 h Toleranz); danach greift sie
+MISSING_TOL_H = 0.25      # Post-Protokoll neuer als neuestes Video + Toleranz -> Video fehlt noch in den Daten
 
 # Seit 2026-11-27 liefert Windsor tiktok_organic 3 Konten (Tech Nik, FactPulse = Autos, Tiny Tales = Storys).
 # Abruf deshalb mit accounts [TECH_ACCOUNT_ID]. Liefert der nur Cache, Ersatz-Abruf ohne Filter (eigener Windsor-Cache,
@@ -236,12 +238,18 @@ def decide(rows, now, posts):
     if age < MIN_AGE_H or gap < MIN_GAP_H:
         return "WARTEN", f"Sock-Delay/Abstand: letzter Tech-Post erst {min(age, gap):.1f} h her (< 4 h); {status}"
     want = None
-    if age >= EMERGENCY_H and not (fresh and status == "WAECHST"):
+    # Schub haelt die Notbremse auf: frisch gemessen (WAECHST) oder beim letzten Snapshot noch gewachsen und der ist
+    # hoechstens einen Windsor-Zyklus alt (WAECHST_ZULETZT) - sonst wuerde nur der Cache-Takt mitten im Schub posten
+    push_holds = (fresh and status == "WAECHST") or (status == "WAECHST_ZULETZT" and data_age < PUSH_HOLD_H)
+    if age >= EMERGENCY_H and not push_holds:
         want = f"Notbremse: '{name}' ist {age:.1f} h alt ({status}: {why})"
     elif status == "STILLSTAND":
         want = f"Stillstand bei '{name}' nach {age:.1f} h: {why}"
     if want is None:
         if age >= EMERGENCY_H:
+            if status == "WAECHST_ZULETZT":
+                return "WARTEN", (f"Schub hat Vorrang vor der Notbremse: {why} (Notbremse greift, falls bis"
+                                  f" {iso(t_last + timedelta(hours=PUSH_HOLD_H))} UTC kein frischer Snapshot kommt)")
             return "WARTEN", f"Schub hat Vorrang vor der Notbremse: {why}"
         return "WARTEN", f"{status}: {why}"
     if quiet:

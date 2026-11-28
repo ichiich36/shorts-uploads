@@ -41,8 +41,10 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
    (Datenalter ≥ 3 h), gilt ab Alter ≥ 8 h Zuwachs 0 als Stillstand – **aber nur, wenn das Video schon beim letzten
    frischen Snapshot flach war** (Zuwachs in den 3 h vor diesem Snapshot < Schwelle aus Regel 3). Wuchs es da noch
    (Status WAECHST_ZULETZT), auf den nächsten frischen Snapshot warten – Schub hat Vorrang; Notbremse (Regel 6) gilt.
-6. **Notbremse:** Alter ≥ 24 h → posten (zur nächsten erlaubten Uhrzeit). Nur ein laufender Schub mit frischen
-   Daten (Zuwachs 3 h ≥ Schwelle) hält sie auf (Regel 4).
+6. **Notbremse:** Alter ≥ 24 h → posten (zur nächsten erlaubten Uhrzeit). Ein laufender Schub hält sie auf
+   (Regel 4): frische Daten mit Zuwachs 3 h ≥ Schwelle (WAECHST) **oder** – seit 28.11. – Cache-Daten, bei denen das
+   Video beim letzten Snapshot noch wuchs (WAECHST_ZULETZT), solange dieser Snapshot jünger als 7 h ist (ein
+   Windsor-Zyklus ~6 h + 1 h Toleranz). Kommt bis dahin kein frischer Snapshot, greift die Notbremse.
 7. **Abstand:** Mindestens 4 h zwischen zwei Tech-Posts, auch bei TikTok-only Nachhol-Posts. Zählt der neuere
    Zeitpunkt aus „neuestes TikTok-Video“ und „letzter Eintrag im Post-Protokoll“. Ist ein gerade gepostetes Video
    noch nicht in den Windsor-Daten, wird gewartet (sonst droht ein Doppel-Post auf alten Cache-Daten).
@@ -92,6 +94,14 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
   (+2 in 6 h), Ball Grows 205, Perfect Sync 164, Red vs Blue 74 → die anderen bleiben flach. Die Annahme „alle Videos
   flachen nach ~6 h ab“ gilt also nicht immer → Regel 5 geändert (siehe unten). Offene Frage: Wächst Escape the Rings
   beim nächsten frischen Snapshot weiter, und bekommt Short 07 (What if) auch einen späten Schub?
+- **Schub läuft weiter (28.11. 08:38 UTC, frisch, diesmal schon über den gefilterten Abruf):** Escape the Rings
+  267 nach 3 h → 617 nach 9 h → **1114 nach 15,0 h** = +497 in 6 h, also sogar schneller als zwischen 3 h und 9 h
+  (+350). Likes aber unverändert 9, 0 Shares, 0 Follower, Ø 9,6 s gesehen, 2,9 % bis zum Ende → viele neue
+  Zuschauer, kaum Interaktion. Gleicher Snapshot: Ball Shrinks 206 (+0 in 6 h), Ball Grows 206 (+1), Perfect Sync 166
+  (+2), Red vs Blue 75 (+1) → alle anderen flach. Erste Frage beantwortet: ja, wächst weiter. Windsor erneuert den
+  Cache offenbar genau ~6 h nach dem letzten Abruf (02:37:49 → 08:38:50) beim nächsten Abruf → nächster frischer
+  Stand frühestens ~14:38 UTC. Hält das Tempo an, wäre Escape the Rings um 17:38 UTC (24 h) noch im Schub → Regel 6
+  angepasst (siehe unten). Offene Frage: Wie lange hält so ein später Schub, und bekommt Short 07 (What if) auch einen?
 
 ## Änderungen an den Regeln (Datum – was – warum)
 - 2026-11-26: Datei mit den Startregeln angelegt. Festgelegt: Notbremse gegen laufenden Schub (Regel 6) und Abstand
@@ -110,6 +120,16 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
   Passt zu „lieber etwas zu spät als zu früh“. (2) Ersatz-Abruf ohne accounts-Filter, wenn der gefilterte nur Cache
   liefert (eigener Windsor-Cache, war hier 6 h frischer); growth_check.py loggt keine Daten, die älter sind als die
   letzte Zeile desselben Videos (sonst würde Cache als frisch gewertet).
+- 2026-11-28 (08:45 UTC): **Regel 6 – Schub hält die Notbremse auch bei Cache-Daten auf** (Parameter PUSH_HOLD_H = 7 h
+  in growth_check.py). Grund: Escape the Rings wächst nach 15 h schneller als je zuvor (+497 in 6 h). Windsor liefert
+  nur alle ~6 h frische Zahlen; „frisch“ (< 3 h) ist also nur die Hälfte der Zeit. Mit der alten Regel hätte die
+  Notbremse um 18:38 oder 19:38 UTC gepostet, sobald der Snapshot von ~14:38/15:38 UTC 3–4 h alt ist – auch wenn
+  dieser Snapshot noch +190 Aufrufe in 3 h zeigt (simuliert; das Skript schrieb dabei selbst „Schub hat Vorrang, auf
+  frische Daten warten“ und postete trotzdem). Das widerspricht „ein laufender Schub hat immer Vorrang“ und hinge nur
+  vom Cache-Takt ab, nicht vom Video. Jetzt wird bis zum nächsten frischen Snapshot gewartet, höchstens 7 h nach dem
+  letzten; kommt keiner, greift die Notbremse wie bisher (simuliert: ohne neuen Snapshot Post um 18:38 UTC wie vorher).
+  Rückblick-Test (growth_replay.py, alle Posts im Protokoll und jede Stunde 26.11. 23:38 bis 28.11. 08:38 UTC): keine
+  einzige frühere Entscheidung ändert sich.
 
 ## Post-Protokoll (neueste unten)
 Format: `- JJJJ-MM-TTTHH:MM:SSZ | Video | Kanäle | Grund (Aufrufe/Kurve des vorherigen Videos)`
