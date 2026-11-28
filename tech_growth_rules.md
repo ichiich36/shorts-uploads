@@ -102,6 +102,14 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
   Cache offenbar genau ~6 h nach dem letzten Abruf (02:37:49 → 08:38:50) beim nächsten Abruf → nächster frischer
   Stand frühestens ~14:38 UTC. Hält das Tempo an, wäre Escape the Rings um 17:38 UTC (24 h) noch im Schub → Regel 6
   angepasst (siehe unten). Offene Frage: Wie lange hält so ein später Schub, und bekommt Short 07 (What if) auch einen?
+- **Schub hält auch nach 24 h an (28.11. 17:39 UTC, frisch):** Escape the Rings 267 (3 h) → 617 (9 h) → 1114 (15 h) →
+  **3532 nach 24,0 h** = +2418 in 9 h (Ø ~270/h; Verlauf dazwischen unbekannt). Likes 9 → 22, 0 Shares, 0 Follower,
+  Ø 9,1 s gesehen, 2,4 % bis zum Ende → riesige Reichweite, aber kaum Bindung/Abos. Gleicher Snapshot: Ball Shrinks 211
+  (+5 in 9 h), Ball Grows 210 (+4), Perfect Sync 170 (+4), Red vs Blue 76 (+1) → die anderen bleiben flach (minimales
+  Plus evtl. durch Profilbesuche). Notbremse (24 h) wurde durch Regel 6 wie vorgesehen aufgehalten (frisch, +806 in 3 h
+  ≥ Schwelle 177). Lücke: zwischen 11:38 und 17:38 UTC gibt es keine Tech-Takt-Commits (Läufe 12:38–16:38 fehlen;
+  vermutlich auch kein Windsor-Abruf, sonst wäre der Cache schon ~14:38 erneuert worden) → die 9 h zwischen den
+  Snapshots sind linear interpoliert. Nächster frischer Stand voraussichtlich nachts (~6 h nach 17:39 UTC, Nachtruhe).
 
 ## Änderungen an den Regeln (Datum – was – warum)
 - 2026-11-26: Datei mit den Startregeln angelegt. Festgelegt: Notbremse gegen laufenden Schub (Regel 6) und Abstand
