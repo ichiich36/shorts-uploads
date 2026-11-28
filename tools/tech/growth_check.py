@@ -39,12 +39,14 @@ QUIET_UNTIL = 8            # 00:00-07:59 Uhr Berlin: nicht posten
 WIN_H = 3.0                # Zeitfenster fuer den Zuwachs
 MIN_ABS, MIN_REL = 5, 0.05  # Stillstand: Zuwachs in WIN_H < max(5, 5 % der aktuellen Aufrufe)
 STALE_H = 3.0              # Daten aelter als das = "stehen mehrere Stunden" (Cache)
-STALE_AGE_H = 8.0          # ... dann ab diesem Alter Zuwachs 0 = Stillstand
+STALE_AGE_H = 8.0          # ... dann ab diesem Alter Zuwachs 0 = Stillstand (seit 28.11. nur, wenn das Video beim
+                           #     letzten frischen Snapshot schon flach war, sonst WAECHST_ZULETZT -> warten)
 EMERGENCY_H = 24.0         # Notbremse
 MISSING_TOL_H = 0.25       # Post-Protokoll neuer als neuestes Video + Toleranz -> Video fehlt noch in den Daten
 
 # Seit 2026-11-27 liefert Windsor tiktok_organic 3 Konten (Tech Nik, FactPulse = Autos, Tiny Tales = Storys).
-# Abruf deshalb mit accounts [TECH_ACCOUNT_ID] (+ Feld account_name). Schutz, falls der Filter fehlt:
+# Abruf deshalb mit accounts [TECH_ACCOUNT_ID]. Liefert der nur Cache, Ersatz-Abruf ohne Filter (eigener Windsor-Cache,
+# siehe tech_growth_rules.md) - dann greift dieser Schutz:
 TECH_ACCOUNT = "Tech Nik"                                   # = tech.nik4
 TECH_ACCOUNT_ID = "_000O2MjrBlBL3ioBnyTn44UQykVqxO0TFdj"
 FOREIGN_TAGS = ("#howcarswork", "#truestory", "#storytime")  # Autos (FactPulse) / Storys (Tiny Tales)
@@ -93,7 +95,7 @@ def append(path, payload, now, dry):
     data = payload.get("data", []) if isinstance(payload, dict) else payload
     rows = read_log(path)
     last_fetch = {r["video_id"]: r["fetched_at_utc"] for r in rows}   # letzte Zeile je Video
-    new, foreign = [], []
+    new, foreign, older = [], [], []
     for d in data or []:
         acc = d.get("account_name")
         cap = (d.get("video_caption") or "").lower()
@@ -109,6 +111,11 @@ def append(path, payload, now, dry):
             fetched = iso(now)
             print("WARNUNG: data_fetched_at fehlt - Laufzeit statt Abrufzeit geloggt")
         vid = str(d["video_id"])
+        if last_fetch.get(vid) and utc(fetched) < utc(last_fetch[vid]):
+            # z. B. Ersatz-Abruf ohne accounts-Filter liefert aelteren Cache als schon im Log -> nicht loggen,
+            # sonst stimmen "letzte Zeile" (Cache-Erkennung) und Kurve nicht mehr
+            older.append(short(d.get("video_caption"), 30))
+            continue
         row = {"fetched_at_utc": fetched, "video_id": vid, "created_at_utc": iso(created),
                "caption_short": short(d.get("video_caption")), "views": cell(d.get("video_views_count")),
                "likes": cell(d.get("video_likes")), "shares": cell(d.get("video_shares")),
@@ -120,8 +127,11 @@ def append(path, payload, now, dry):
                   " -> zaehlt als unbekannt, nicht als Stillstand")
         new.append(row)
     if foreign:
-        print(f"WARNUNG: {len(foreign)} Video(s) anderer Konten uebersprungen ({'; '.join(foreign)}) -"
-              f" Windsor-Abruf mit accounts [\"{TECH_ACCOUNT_ID}\"] machen")
+        print(f"Hinweis: {len(foreign)} Video(s) anderer Konten uebersprungen ({'; '.join(foreign)}) - normal beim"
+              f" Ersatz-Abruf ohne accounts-Filter, sonst Windsor-Abruf mit accounts [\"{TECH_ACCOUNT_ID}\"] machen")
+    if older:
+        print(f"WARNUNG: {len(older)} Zeile(n) nicht geloggt, weil aelter als die letzte Log-Zeile desselben Videos"
+              f" ({'; '.join(older)}) - frischeres Abruf-Ergebnis verwenden")
     new.sort(key=lambda r: r["created_at_utc"])
     if not dry:
         ensure_log(path)
@@ -195,8 +205,16 @@ def decide(rows, now, posts):
         else:
             status, why = "STILLSTAND", (f"+{g3:.0f} Aufrufe in 3 h (< {thr:.0f}), letzte Stunde +{g1:.0f}"
                                          f" nicht mehr als davor (+{g0:.0f})")
+    elif data_age >= STALE_H and age >= STALE_AGE_H and g3 >= thr:
+        # seit 2026-11-28: Escape the Rings lag beim letzten frischen Snapshot (3 h) bei 267 und hatte 6 h spaeter 617
+        # -> wer beim letzten frischen Stand noch wuchs, gilt nicht als Stillstand, nur weil Windsor nichts Neues liefert
+        status, why = "WAECHST_ZULETZT", (f"Daten stehen seit {data_age:.1f} h (Cache), beim letzten frischen Snapshot"
+                                          f" aber noch +{g3:.0f} Aufrufe in 3 h (Schwelle {thr:.0f}) -> Schub hat"
+                                          " Vorrang, auf frische Daten warten")
     elif data_age >= STALE_H and age >= STALE_AGE_H:
-        status, why = "STILLSTAND", f"Daten stehen seit {data_age:.1f} h (Cache), Alter >= {STALE_AGE_H:.0f} h -> Zuwachs 0"
+        status, why = "STILLSTAND", (f"Daten stehen seit {data_age:.1f} h (Cache), Alter >= {STALE_AGE_H:.0f} h, beim"
+                                     f" letzten frischen Snapshot schon flach (+{g3:.0f} in 3 h < {thr:.0f})"
+                                     " -> Zuwachs 0")
     else:
         status, why = "UNBEKANNT", ("veralteter Cache (data_fetched_at wie in der letzten Zeile)" if stale_run
                                     else f"Daten {data_age:.1f} h alt")

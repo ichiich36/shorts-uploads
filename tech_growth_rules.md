@@ -13,7 +13,12 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
    Storys) → ohne accounts-Filter kämen Auto- und Story-Videos ins Log und würden als „letztes Video“ gelten.
    Feldliste sonst unverändert lassen (andere Felder = eigener Windsor-Cache mit eigenem data_fetched_at).
    growth_check.py überspringt zur Sicherheit Videos anderer Konten (account_name ≠ „Tech Nik“, falls das Feld
-   mitkommt, sonst Captions mit #howcarswork/#truestory/#storytime) und meldet das als WARNUNG.
+   mitkommt, sonst Captions mit #howcarswork/#truestory/#storytime) und meldet das als Hinweis.
+   **Ersatz-Abruf (seit 28.11.):** Liefert der gefilterte Abruf dasselbe data_fetched_at wie die letzte Log-Zeile
+   (Cache), denselben Abruf einmal OHNE accounts-Filter wiederholen (sonst alles gleich, auch KEIN force_refresh).
+   Das ist ein eigener Windsor-Cache mit eigenem Takt (28.11. 02:38 UTC: gefiltert noch 20:38:30, ungefiltert frisch
+   02:37:49). Nur das Ergebnis mit dem neueren data_fetched_at loggen; growth_check.py überspringt die Auto-/Story-
+   Videos und loggt nie Daten, die älter sind als die letzte Zeile desselben Videos.
 2. Ergebnis-JSON als Datei speichern (Scratchpad) und ausführen:
    `python3 tools/tech/growth_check.py --append <datei.json>`
    → hängt für jedes Video der letzten 3 Tage eine Zeile an tech_growth_log.csv an und schreibt als letzte Zeile
@@ -33,7 +38,9 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
 4. **Schub hat Vorrang:** Wächst das Video noch, NICHT posten.
 5. **Cache:** Ist data_fetched_at gleich wie in der letzten Zeile desselben Videos, ist es veralteter Cache: Zeile
    trotzdem loggen, aber als „unbekannt“ werten, nicht als Stillstand. Stehen die Daten mehrere Stunden
-   (Datenalter ≥ 3 h), gilt ab Alter ≥ 8 h Zuwachs 0 als Stillstand.
+   (Datenalter ≥ 3 h), gilt ab Alter ≥ 8 h Zuwachs 0 als Stillstand – **aber nur, wenn das Video schon beim letzten
+   frischen Snapshot flach war** (Zuwachs in den 3 h vor diesem Snapshot < Schwelle aus Regel 3). Wuchs es da noch
+   (Status WAECHST_ZULETZT), auf den nächsten frischen Snapshot warten – Schub hat Vorrang; Notbremse (Regel 6) gilt.
 6. **Notbremse:** Alter ≥ 24 h → posten (zur nächsten erlaubten Uhrzeit). Nur ein laufender Schub mit frischen
    Daten (Zuwachs 3 h ≥ Schwelle) hält sie auf (Regel 4).
 7. **Abstand:** Mindestens 4 h zwischen zwei Tech-Posts, auch bei TikTok-only Nachhol-Posts. Zählt der neuere
@@ -46,6 +53,8 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
 - Kurve = (Veröffentlichung, 0 Aufrufe) + alle eindeutigen Snapshots (gleiches data_fetched_at = ein Snapshot),
   dazwischen linear. Zuwächse werden vom neuesten Snapshot aus zurückgerechnet (3 h, letzte Stunde, Stunde davor).
 - Die Parameter stehen oben im Skript. Regeländerung = Skript UND diese Datei anpassen und unten eintragen.
+- Vor einer Regeländerung prüfen, was sie früher entschieden hätte: `python3 tools/tech/growth_replay.py` (jeder Post
+  im Protokoll) oder mit Zeitpunkten; alte Version zum Vergleich mit `--script` (z. B. aus `git show`).
 
 ## Kurven früherer Videos (Beobachtungen)
 - Short 01 Red vs Blue (TikTok 2026-11-25 12:26 UTC): 74 Aufrufe nach ~35 h, nach ~41 h immer noch 74 (steht);
@@ -76,6 +85,13 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
   Ball Grows 204 nach 21,3 h, Perfect Sync 163, Red vs Blue 74 → alle älteren flach, kein später Schub.
   Dieser frische Snapshot kam schon 3 h nach dem letzten (17:38 → 20:38 UTC), vorher ~6 h – evtl. weil Windsor beim
   Verbinden der neuen Konten neu geladen hat; nicht als neuen Takt voraussetzen.
+- **Erster später Schub (28.11.):** Escape the Rings 267 Aufrufe nach 3,0 h → **617 nach 9,0 h** (frischer Snapshot
+  28.11. 02:37 UTC über den Abruf ohne accounts-Filter; gefiltert stand der Cache noch auf 20:38 UTC) = +350 in 6 h,
+  mehr als in den ersten 3 h. Wann genau der Schub kam, ist unbekannt (dazwischen keine Daten). Bestes Tech-Video
+  bisher; Ø 10,0 s gesehen, 2,9 % bis zum Ende, 9 Likes, 0 Shares, 0 Follower. Gleicher Snapshot: Ball Shrinks 206
+  (+2 in 6 h), Ball Grows 205, Perfect Sync 164, Red vs Blue 74 → die anderen bleiben flach. Die Annahme „alle Videos
+  flachen nach ~6 h ab“ gilt also nicht immer → Regel 5 geändert (siehe unten). Offene Frage: Wächst Escape the Rings
+  beim nächsten frischen Snapshot weiter, und bekommt Short 07 (What if) auch einen späten Schub?
 
 ## Änderungen an den Regeln (Datum – was – warum)
 - 2026-11-26: Datei mit den Startregeln angelegt. Festgelegt: Notbremse gegen laufenden Schub (Regel 6) und Abstand
@@ -84,6 +100,16 @@ Jedes NEUE Tech-Video geht auf alle 3 Kanäle: YouTube techtbe24, TikTok tech.ni
   Abruf mit accounts-Filter auf Tech Nik (Schritt 1) und Schutz in growth_check.py (fremde Videos werden übersprungen).
   Grund: Sonst wäre die Eiffelturm-Story (Tiny Tales, 19:34 UTC) als „letztes Tech-Video“ gewertet worden und Auto-/
   Story-Zahlen hätten die Kurven verfälscht.
+- 2026-11-28 (02:40 UTC): **Regel 5 entschärft + Ersatz-Abruf.** (1) Cache-Stillstand ab 8 h nur noch, wenn das Video
+  beim letzten frischen Snapshot schon flach war; wuchs es da noch, wird auf frische Daten gewartet (Status
+  WAECHST_ZULETZT; Notbremse 24 h bleibt). Grund: Escape the Rings legte zwischen 3 h und 9 h von 267 auf 617 Aufrufe
+  zu, während die gefilterten Daten seit 20:38 UTC standen. Mit der alten Regel wäre heute um 07:38 UTC (08:38 Berlin)
+  gepostet worden, egal was der nächste frische Snapshot zeigt – also womöglich mitten in einen Schub. Rückblick-Test
+  (growth_replay.py): einzige Änderung früherer Entscheidungen = Ball Shrinks wäre am 27.11. 3 h später nachgeholt
+  worden (11:38 statt 08:41 UTC, beim frischen Snapshot 203 Aufrufe); Escape the Rings (Regel 3, frische Daten) gleich.
+  Passt zu „lieber etwas zu spät als zu früh“. (2) Ersatz-Abruf ohne accounts-Filter, wenn der gefilterte nur Cache
+  liefert (eigener Windsor-Cache, war hier 6 h frischer); growth_check.py loggt keine Daten, die älter sind als die
+  letzte Zeile desselben Videos (sonst würde Cache als frisch gewertet).
 
 ## Post-Protokoll (neueste unten)
 Format: `- JJJJ-MM-TTTHH:MM:SSZ | Video | Kanäle | Grund (Aufrufe/Kurve des vorherigen Videos)`
